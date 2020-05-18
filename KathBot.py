@@ -60,14 +60,6 @@ async def errorcheck(usage, ctx, error):
 async def on_message(message):
     if(message.author.bot != True):
         await client.process_commands(message)
-        if(message.content == "owo"):
-            await message.channel.send("uwu")
-
-        if(message.content == "uwu"):
-            await message.channel.send("owo")
-            
-        if(message.content == "who's babie?"):
-            await message.channel.send("IM BABIE!!!")
 
 @client.command(name = 'help')
 async def help(ctx):
