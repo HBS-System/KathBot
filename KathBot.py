@@ -228,5 +228,8 @@ async def announcement(ctx, *, arg):
         
     else:
         await ctx.send("You cannot command me, mortal!")
-
-client.run(########)
+        
+with open("token.txt").read() as tokenTxt:
+    token = tokenTxt.read()
+    
+    client.run(token)
