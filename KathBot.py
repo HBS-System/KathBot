@@ -159,17 +159,7 @@ async def invite(ctx):
 
 @client.command(name = "grace")
 async def grace(ctx):
-    await ctx.send("GRACE")
-    await asyncio.sleep(1.25)
-    await ctx.send("IS")
-    await asyncio.sleep(1.25)
-    await ctx.send("THE")
-    await asyncio.sleep(1.25)
-    await ctx.send("GAYEST")
-    await asyncio.sleep(1.25)
-    await ctx.send("GAY")
-    await asyncio.sleep(1.25)
-    await ctx.send("EVER")
+    await ctx.send("GRACE.\nIS.\nTHE.\nGAYEST.\nGAY.\nEVER.")
 
 @client.command(name = "tarot")
 async def tarot(ctx, arg = 1, *args):
