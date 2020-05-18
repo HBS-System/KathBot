@@ -43,6 +43,7 @@ async def errorcheck(usage, ctx, error):
     elif isinstance(error, ArgumentParsingError) or isinstance(error, BadArgument) or isinstance(error, TooManyArguments) or isinstance(error, MissingRequiredArgument):
         embed = discord.Embed(title = 'Improper usage.', description = "Proper usage:", color = 0xFF88FF)
         embed.add_field(name = " ", value = usage)
+        embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = "https://discord.gg/CGNkcjm", inline = False)
         embed.set_footer(text = 'Bot created by ' + AS())
         await ctx.send(embed = embed)
         
@@ -67,14 +68,14 @@ async def help(ctx):
     embed = discord.Embed(title = "KathBot Commands", description="Here you can get a full list of this bot's commands!", color=0xFF88FF)
     embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
     embed.set_footer(text = 'Bot created by ' + AS())
-    embed.add_field(name = "ping", value = "Pong!", inline = False) 
-    embed.add_field(name = "say", value = "Make me say something!", inline = False)
-    embed.add_field(name = "rate", value = "Give me something to rate!", inline = False)
-    embed.add_field(name = "8ball", value = "Shake the Magic 8ball!", inline = False)
-    embed.add_field(name = "cat", value = "Use this command to get a random cat picture!", inline = False)
-    embed.add_field(name = "invite", value = "Want to invite me to your server? Run this command!", inline = False)
-    embed.add_field(name = "grace", value = "Bow down to your gay overlord!", inline = False)
-    embed.add_field(name = "tarot", value = "Read a tarot spread!", inline = False)
+    embed.add_field(name = "8ball [str]", value = "Shakes the Magic 8-Ball.", inline = False)
+    embed.add_field(name = "cat", value = "Sends a cat picture from a selection of 20 cats.", inline = False)
+    embed.add_field(name = "grace", value = "Gay", inline = False)
+    embed.add_field(name = "invite", value = "Sends a bot invite link.", inline = False)
+    embed.add_field(name = "ping", value = "Responds with the bot's current latency.", inline = False) 
+    embed.add_field(name = "rate [str]", value = "Rates an argument from a 0 to 10. All people are a 10/10.", inline = False)
+    embed.add_field(name = "say [str]", value = "Makes the bot say anything you want it to.", inline = False)
+    embed.add_field(name = "tarot [int] [optional str]", value = "Generates a spread of tarot cards, anywhere from between 1 to 7.", inline = False)
     embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = "https://discord.gg/CGNkcjm", inline = False)
     await ctx.send(embed = embed)
 
@@ -92,13 +93,13 @@ async def say(ctx, *args):
     await asyncio.sleep(.75)
     try:
         await ctx.message.delete()
-
+        
     except:
         pass
-    
+
 @say.error
 async def say_error(ctx, error):
-    await errorcheck("``k!say Argument(s)``", ctx, error)
+    await errorcheck("k!say Argument(s)", ctx, error)
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
@@ -128,7 +129,7 @@ async def rate(ctx, *args):
 
 @rate.error
 async def rate_error(ctx, error):
-    await errorcheck("``k!rate Argument(s)``", ctx, error)
+    await errorcheck("k!rate Argument(s)", ctx, error)
 
 @client.command(name = '8ball')
 async def eightball(ctx, *args):
@@ -142,7 +143,7 @@ async def eightball(ctx, *args):
 
 @eightball.error
 async def eightball_error(ctx, error):
-    await errorcheck("``k!8ball Argument(s)``", ctx, error)
+    await errorcheck("k!8ball Argument(s)", ctx, error)
 
 @client.command(name = 'cat')
 async def cat(ctx):
@@ -194,19 +195,19 @@ async def tarot(ctx, arg = 1, *args):
             else:
                 embed.add_field(name = "Card #" + str(card), value = "Flipped " + random.choice(cards['cards']) + "\n", inline = False)
 
-        embed.set_footer(text = "Command is a WIP, type ``k!help`` and join the support server if you need help!" + '\nBot created by ' + AS())
+        embed.set_footer(text = "Command is a WIP, type k!help and join the support server if you need help!" + '\nBot created by ' + AS())
         await ctx.send(embed = embed)
     
     else:
         await ctx.send("Improper usage.")
         
-        embed = discord.Embed(title = 'Proper Usage: ', description = "``k!tarot 1-7 Question(Optional)``", color = 0xFF88FF)
+        embed = discord.Embed(title = 'Proper Usage: ', description = "k!tarot [int] [optional str]", color = 0xFF88FF)
         embed.set_footer(text = "Command is a WIP, type ``k!help`` and join the support server if you need help!" + '\nBot created by ' + AS())
         await ctx.send(embed = embed)
 
 @tarot.error
 async def tarot_error(ctx, error):
-    await errorcheck("``k!tarot 1-7 Question(Optional)``")
+    await errorcheck("k!tarot [int] [optional str]")
 
 @client.command(name = "status")
 async def OWNER_status(ctx, *, arg):
