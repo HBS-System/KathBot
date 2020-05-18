@@ -90,8 +90,12 @@ async def say(ctx, *args):
     arg = " ".join(args)
     await ctx.send(arg)
     await asyncio.sleep(.75)
-    await ctx.message.delete()
+    try:
+        await ctx.message.delete()
 
+    except:
+        pass
+    
 @say.error
 async def say_error(ctx, error):
     await errorcheck("``k!say Argument(s)``", ctx, error)
