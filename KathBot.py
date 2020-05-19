@@ -1,30 +1,30 @@
 import discord, asyncio, typing, os, random, json, time
 from datetime import date
 from discord.ext import commands
-from discord.ext.commands import *
+from discord.ext.commands import ArgumentParsingError, BadArgument, TooManyArguments, MissingRequiredArgument, MissingRequiredArgument, BotMissingRole, BotMissingPermissions, CommandInvokeError, CheckFailure, MissingPermissions, MissingRole
 from random import randint, choice
 
-with open("tarot.json") as cardList:
-    cards = json.load(cardList)
-
-client = commands.Bot(command_prefix = 'k!')
-
+cwd = os.path.dirname(__file__)
+client = commands.Bot(command_prefix = 'kt!')
 client.remove_command('help')
+
+def AS():
+    AS = client.get_user(id = 456282270974607361)
+    return AS.name + "#" + AS.discriminator
+
+with open("%s/tarot.json" % cwd) as cardList:
+    cards = json.load(cardList)
 
 def debug_error(ctx, error):
     now = time.localtime()
     errorTime = time.strftime("%H:%M:%S", now)
     errorDate = date.today()
-    print(str(error) + " at " + str(errorTime) + " on " + str(errorDate) + " from " + ctx.message.author.name + ": " + str(ctx.message.content) + "\n Message id: " + str(ctx.message.id))
-    
-def AS():
-    AS = client.get_user(id = 456282270974607361)
-    return AS.name + "#" + AS.discriminator
+    print("{0} at {1} on {2} from {3}: {4} \nMessage ID: {5}".format(error, errorTime, errorDate, ctx.message.author.name, ctx.message.content, ctx.message.id))
 
 @client.event
 async def on_ready():
     print("Logged on!")
-    await client.change_presence(status = discord.Status.online, activity = discord.Game(name = "k!help | inside " + str(len(client.guilds)) + " servers!"))
+    await client.change_presence(status = discord.Status.online, activity = discord.Game(name = "k!help | inside %s servers!" % len(client.guilds)))
     
 @client.event
 async def on_command_error(ctx, error):
@@ -41,20 +41,21 @@ async def errorcheck(usage, ctx, error):
         await ctx.send("You do not have the permissions required to run this command.")
         
     elif isinstance(error, ArgumentParsingError) or isinstance(error, BadArgument) or isinstance(error, TooManyArguments) or isinstance(error, MissingRequiredArgument):
-        embed = discord.Embed(title = 'Improper usage.', description = "Proper usage:", color = 0xFF88FF)
-        embed.add_field(name = " ", value = usage)
+        embed = discord.Embed(title = 'Improper usage.', description = " ", color = 0xFF88FF)
+        embed.add_field(name = "Proper usage:", value = usage, inline = False)
         embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = "https://discord.gg/CGNkcjm", inline = False)
-        embed.set_footer(text = 'Bot created by ' + AS())
+        embed.set_footer(text = 'Bot created by %s' % AS())
         await ctx.send(embed = embed)
         
     elif isinstance(error, BotMissingRole) or isinstance(error, BotMissingPermissions):
         await ctx.send("Uh oh! I do not have the permissions to carry out the given command!")
         
     elif isinstance(error, CommandInvokeError):
-        await ctx.send("Uh oh! Please contact my creators, or join the support server to get help with this command! " + AS() + "\nhttps://discord.gg/CGNkcjm")
+        await ctx.send("Uh oh! Please contact my creators, or join the support server to get help with this command! %s\nhttps://discord.gg/CGNkcjm" % AS())
     
     else:
         await ctx.send("An error has occurred.")
+
     debug_error(ctx, error)
 
 @client.event
@@ -67,7 +68,7 @@ async def help(ctx):
     
     embed = discord.Embed(title = "KathBot Commands", description="Here you can get a full list of this bot's commands!", color=0xFF88FF)
     embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
-    embed.set_footer(text = 'Bot created by ' + AS())
+    embed.set_footer(text = 'Bot created by %s' % AS())
     embed.add_field(name = "8ball [str]", value = "Shakes the Magic 8-Ball.", inline = False)
     embed.add_field(name = "cat", value = "Sends a cat picture from a selection of 20 cats.", inline = False)
     embed.add_field(name = "grace", value = "Gay", inline = False)
@@ -109,23 +110,20 @@ async def rate(ctx, *args):
         await asyncio.sleep(1)
         
     if(lowerArg == 'drukon'):
-        await ctx.send("Hm... I rate " + arg + " a 11/10, for being an amazing friend! <3")
+        await ctx.send("Hm... I rate %s a 11/10, for being an amazing friend! <3" % arg)
              
     elif(lowerArg == 'fir'):
-        await ctx.send("Hm... I rate " + arg + " a 11/10, for being such a precious little bean! <3")
+        await ctx.send("Hm... I rate %s a 11/10, for being such a precious little bean! <3" % arg)
         
     elif(lowerArg == 'grace'):
         await ctx.send("Grace is the bestest she gets a 11/10 for being such an awesome little sister! <3")
         
-    elif(lowerArg == 'full cock annihilation'):
-        await ctx.send("Hm... I rate " + arg + " a cock/10!")
-        
     elif(lowerArg == 'pixie' or lowerArg == "sillipha"):
-        await ctx.send("Hm.. I rate " + arg + " a 11/10! <3")
+        await ctx.send("Hm.. I rate %s a 11/10! <3" % arg)
         
     else:
         random.seed(lowerArg)
-        await ctx.send("Hm... I rate " + arg + " a... " + str(randint(0,10)) + "/10!")
+        await ctx.send("Hm... I rate {0} a... {1}/10!".format(arg, randint(0,10)))
 
 @rate.error
 async def rate_error(ctx, error):
@@ -139,7 +137,7 @@ async def eightball(ctx, *args):
     arg = " ".join(args)
     lowerArg = arg.lower()
     random.seed(lowerArg)
-    await message.edit(content = "In response to " + arg + ", it reads... " + '"' + choice(Response) + '"')
+    await message.edit(content = "In response to {0}, it reads... \"{1}\"".format(arg, choice(Response)))
 
 @eightball.error
 async def eightball_error(ctx, error):
@@ -147,7 +145,7 @@ async def eightball_error(ctx, error):
 
 @client.command(name = 'cat')
 async def cat(ctx):
-    path = "Cats"
+    path = "%s\\Cats" % (cwd)
     randomCat = random.choice(os.listdir(path))
     await ctx.send("Here's your cat!", file = discord.File(path + '/' + randomCat))
 
@@ -168,51 +166,41 @@ async def grace(ctx):
 
 @client.command(name = "tarot")
 async def tarot(ctx, arg = 1, *args):
-    error = 0
     try:
         count = int(arg)
-        
-        if(arg > 7 or arg < 0):
-            raise BadArgument
 
     except:
-        error = 1
-        
-    if(error == 0):
-        
+        return BadArgument
+
+    if(count in range(1,8)):
         async with ctx.channel.typing():
             await asyncio.sleep(.6)
     
         embed = discord.Embed(title = "Your spread:", description = " ", color=0xFF88FF)
         embed.set_footer(text = '\nBot created by ' + AS())
-        card = 0
-        for x in range(0, count):
+        for card in range(0, count):
             card += 1
             flip = random.randint(0, 1)
             if(flip == 0):
-                embed.add_field(name = "Card #" + str(card), value = random.choice(cards['cards']) + "\n", inline = False)
+                embed.add_field(name = "Card #%s" % card, value = random.choice(cards['cards']), inline = False)
             
             else:
-                embed.add_field(name = "Card #" + str(card), value = "Flipped " + random.choice(cards['cards']) + "\n", inline = False)
+                embed.add_field(name = "Card #%s" % card, value = "Flipped %s\n"% random.choice(cards['cards']), inline = False)
 
-        embed.set_footer(text = "Command is a WIP, type k!help and join the support server if you need help!" + '\nBot created by ' + AS())
+        embed.set_footer(text = "Command is a WIP, type k!help and join the support server if you need help!\nBot created by %s" % AS())
         await ctx.send(embed = embed)
-    
+
     else:
-        await ctx.send("Improper usage.")
-        
-        embed = discord.Embed(title = 'Proper Usage: ', description = "k!tarot [int] [optional str]", color = 0xFF88FF)
-        embed.set_footer(text = "Command is a WIP, type ``k!help`` and join the support server if you need help!" + '\nBot created by ' + AS())
-        await ctx.send(embed = embed)
+        await ctx.send("Argument is out of bounds.")
 
 @tarot.error
 async def tarot_error(ctx, error):
-    await errorcheck("k!tarot [int] [optional str]")
+    await errorcheck("k!tarot [int] [optional str]", ctx, error)
 
 @client.command(name = "status")
 async def OWNER_status(ctx, *, arg):
     if(ctx.author.id == 456282270974607361):
-        await client.change_presence(status = discord.Status.online, activity = discord.Game(name = "k!help | " + arg + " | inside " + str(len(client.guilds)) + " servers!"))
+        await client.change_presence(status = discord.Status.online, activity = discord.Game(name = "k!help | {0} | inside {1} servers!".format(arg, len(client.guilds))))
         
     else:
         await ctx.send("You can not command me, mortal!")
@@ -223,7 +211,7 @@ async def announcement(ctx, *, arg):
         for guild in client.guilds:
             embed = discord.Embed(title = "Announcement", description = "Announcement from KathBot's Developer(s)", color = 0xFF88FF)
             embed.add_field(name = "Message:", value = arg, inline = False)
-            embed.set_footer(text = "Have concerns? type ``k!help`` and join the support server to tell us!" + '\nBot created by ' + AS())
+            embed.set_footer(text = "Have concerns? type k!help and join the support server to tell us!\nBot created by %s" % AS())
             for channel in guild.text_channels:
                 try:
                     await channel.send(embed = embed)
@@ -235,7 +223,5 @@ async def announcement(ctx, *, arg):
     else:
         await ctx.send("You cannot command me, mortal!")
 
-with open("token.txt") as tokenTxt:
-    token = tokenTxt.read()
-    
-    client.run(token)
+with open("%s/token.txt" % cwd) as token:
+    client.run(token.read())
