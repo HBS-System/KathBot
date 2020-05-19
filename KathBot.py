@@ -29,7 +29,6 @@ async def on_ready():
 @client.event
 async def on_command_error(ctx, error):
     await ctx.send("Invalid command. Use ``k!help`` for help using my commands!")
-    debug_error(ctx, error)
     
 @client.event
 async def on_error(event, *args, **kwargs):
