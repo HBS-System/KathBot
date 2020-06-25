@@ -127,20 +127,28 @@ async def quote(ctx, scmd, *, args):
     if(scmd == 'store'):
         arg = "".join(args)
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
-            quotesFile = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-            quotesList = json.loads(quotesFile.read())
+            quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
+            quotesList = json.loads(quotesR.read())
             quotesList['quotes'].append(arg)
             print(quotesList)
-            quotesFile.seek(0)
-            quotesFile.truncate(0)
-            json.dump(quotesList, quotesFile)
+            quotesR.seek(0)
+            quotesR.truncate(0)
+            json.dump(quotesList, quotesR)
 
         else:
-            quotesFile = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'w+')
+            quotesW = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'w+')
             quotesList = {'quotes': [arg]}
-            json.dump(quotesList, quotesFile)
+            json.dump(quotesList, quotesW)
 
         await ctx.send("'{0}' has been stored!".format(arg))
+
+    elif(scmd == 'list'):
+        if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
+            quotes = json.loads(quotesR.read())
+            embed = discord.Embed(title = "Your spread:", description = " ", color=0xFF88FF)
+            embed.set_footer(text = '\nBot created by ' + AS())
+            for count in quotes.len():
+                pass
 
 @quote.error
 async def quote_error(ctx, error):
