@@ -63,6 +63,30 @@ async def on_message(message):
     if(message.author.bot != True):
         await client.process_commands(message)
 
+
+#Commands v v v
+
+@client.command(name = '8ball')
+async def eightball(ctx, *args):
+    message = await ctx.send("Shaking the 8-Ball...")
+    await asyncio.sleep(1)
+    Response = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."]
+    arg = " ".join(args)
+    lowerArg = arg.lower()
+    userid = ctx.author.id
+    random.seed(str(userid) + lowerArg)
+    await message.edit(content = "In response to {0}, it reads... \"{1}\"".format(arg, choice(Response)))
+
+@client.command(name = 'cat')
+async def cat(ctx):
+    path = "%s\\Cats" % (cwd)
+    randomCat = random.choice(os.listdir(path))
+    await ctx.send("Here's your cat!", file = discord.File(path + '/' + randomCat))
+
+@client.command(name = "grace")
+async def grace(ctx):
+    await ctx.send("GRACE.\nIS.\nTHE.\nGAYEST.\nGAY.\nEVER.")
+
 @client.command(name = 'help')
 async def help(ctx):
     
@@ -80,6 +104,17 @@ async def help(ctx):
     embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = "https://discord.gg/CGNkcjm", inline = False)
     await ctx.send(embed = embed)
 
+@client.command(name = "invite")
+async def invite(ctx):
+    async with ctx.channel.typing():
+        await asyncio.sleep(.3)
+
+    embed = discord.Embed(title="KathBot Invite", description="You want to invite me to your server?!", color=0xFF88FF)
+    embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
+    embed.set_footer(text = 'Bot created by ' + AS())
+    embed.add_field(name = "Here's my invite link!", value = "https://discordapp.com/api/oauth2/authorize?client_id=596683881575612429&permissions=67226688&scope=bot")
+    await ctx.send(embed = embed)
+
 @client.command(name = 'ping')
 async def ping(ctx):
     async with ctx.channel.typing():
@@ -87,20 +122,29 @@ async def ping(ctx):
         
     await ctx.send("Pong!" + " ``{}ms``".format(round(client.latency * 1000, 1)))
 
-@client.command(name = 'say')
-async def say(ctx, *args):
-    arg = " ".join(args)
-    await ctx.send(arg)
-    await asyncio.sleep(.75)
-    try:
-        await ctx.message.delete()
-        
-    except:
-        pass
+@client.command(name = 'quote')
+async def quote(ctx, scmd, *, args):
+    if(scmd == 'store'):
+        arg = "".join(args)
+        if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
+            quotesFile = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
+            quotesList = json.loads(quotesFile.read())
+            quotesList['quotes'].append(arg)
+            print(quotesList)
+            quotesFile.seek(0)
+            quotesFile.truncate(0)
+            json.dump(quotesList, quotesFile)
 
-@say.error
-async def say_error(ctx, error):
-    await errorcheck("k!say Argument(s)", ctx, error)
+        else:
+            quotesFile = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'w+')
+            quotesList = {'quotes': [arg]}
+            json.dump(quotesList, quotesFile)
+
+        await ctx.send("'{0}' has been stored!".format(arg))
+
+@quote.error
+async def quote_error(ctx, error):
+    await errorcheck("k!quote [store|list|grab] [arg]", ctx, error)
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
@@ -125,45 +169,16 @@ async def rate(ctx, *args):
         random.seed(lowerArg)
         await ctx.send("Hm... I rate {0} a... {1}/10!".format(arg, randint(0,10)))
 
-@rate.error
-async def rate_error(ctx, error):
-    await errorcheck("k!rate Argument(s)", ctx, error)
-
-@client.command(name = '8ball')
-async def eightball(ctx, *args):
-    message = await ctx.send("Shaking the 8-Ball...")
-    await asyncio.sleep(1)
-    Response = ["It is certain.", "It is decidedly so.", "Without a doubt.", "Yes - definitely.", "You may rely on it.", "As I see it, yes.", "Most likely.", "Outlook good.", "Yes.", "Signs point to yes.", "Reply hazy, try again.", "Ask again later.", "Better not tell you now.", "Cannot predict now.", "Concentrate and ask again.", "Don't count on it.", "My reply is no.", "My sources say no.", "Outlook not so good.", "Very doubtful."]
+@client.command(name = 'say')
+async def say(ctx, *args):
     arg = " ".join(args)
-    lowerArg = arg.lower()
-    userid = ctx.author.id
-    random.seed(str(userid) + lowerArg)
-    await message.edit(content = "In response to {0}, it reads... \"{1}\"".format(arg, choice(Response)))
-
-@eightball.error
-async def eightball_error(ctx, error):
-    await errorcheck("k!8ball Argument(s)", ctx, error)
-
-@client.command(name = 'cat')
-async def cat(ctx):
-    path = "%s\\Cats" % (cwd)
-    randomCat = random.choice(os.listdir(path))
-    await ctx.send("Here's your cat!", file = discord.File(path + '/' + randomCat))
-
-@client.command(name = "invite")
-async def invite(ctx):
-    async with ctx.channel.typing():
-        await asyncio.sleep(.3)
-
-    embed = discord.Embed(title="KathBot Invite", description="You want to invite me to your server?!", color=0xFF88FF)
-    embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
-    embed.set_footer(text = 'Bot created by ' + AS())
-    embed.add_field(name = "Here's my invite link!", value = "https://discordapp.com/api/oauth2/authorize?client_id=596683881575612429&permissions=67226688&scope=bot")
-    await ctx.send(embed = embed)
-
-@client.command(name = "grace")
-async def grace(ctx):
-    await ctx.send("GRACE.\nIS.\nTHE.\nGAYEST.\nGAY.\nEVER.")
+    await ctx.send(arg)
+    await asyncio.sleep(.75)
+    try:
+        await ctx.message.delete()
+        
+    except:
+        pass
 
 @client.command(name = "tarot")
 async def tarot(ctx, arg = 1, *args):
@@ -194,9 +209,13 @@ async def tarot(ctx, arg = 1, *args):
     else:
         await ctx.send("Argument is out of bounds.")
 
-@tarot.error
-async def tarot_error(ctx, error):
-    await errorcheck("k!tarot [int] [optional str]", ctx, error)
+
+#Staff commands v v v
+
+#None so far, sorry :<
+
+
+#Owner commands v v v
 
 @client.command(name = "status")
 async def OWNER_status(ctx, *, arg):
@@ -223,6 +242,27 @@ async def announcement(ctx, *, arg):
         
     else:
         await ctx.send("You cannot command me, mortal!")
+
+
+#Error checking v v v
+
+@eightball.error
+async def eightball_error(ctx, error):
+    await errorcheck("k!8ball Argument(s)", ctx, error)
+
+@rate.error
+async def rate_error(ctx, error):
+    await errorcheck("k!rate Argument(s)", ctx, error)
+
+@say.error
+async def say_error(ctx, error):
+    await errorcheck("k!say Argument(s)", ctx, error)
+
+@tarot.error
+async def tarot_error(ctx, error):
+    await errorcheck("k!tarot [int] [optional str]", ctx, error)
+
+
 
 with open("%s/token.txt" % cwd) as token:
     client.run(token.read())
