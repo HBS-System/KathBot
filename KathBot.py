@@ -4,7 +4,6 @@ from discord.ext import commands
 from discord.ext.commands import ArgumentParsingError, BadArgument, TooManyArguments, MissingRequiredArgument, MissingRequiredArgument, BotMissingRole, BotMissingPermissions, CommandInvokeError, CheckFailure, MissingPermissions, MissingRole
 from random import randint, choice
 
-#cwd = os.path.dirname(__file__) #For development using VSCode
 cwd = os.getcwd().replace("\\", "/")
 client = commands.Bot(command_prefix = 'kt!')
 client.remove_command('help')
