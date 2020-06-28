@@ -28,7 +28,7 @@ async def on_ready():
     
 @client.event
 async def on_command_error(ctx, error):
-    await ctx.send("Invalid command. Use ``k!help`` for help using my commands!")
+    pass
     
 @client.event
 async def on_error(event, *args, **kwargs):
@@ -122,7 +122,7 @@ async def ping(ctx):
     await ctx.send("Pong!" + " ``{}ms``".format(round(client.latency * 1000, 1)))
 
 @client.command(name = 'quote')
-async def quote(ctx, scmd, *, args):
+async def quote(ctx, scmd, *, args = ""):
     if(scmd == 'store'):
         arg = "".join(args)
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
@@ -143,11 +143,14 @@ async def quote(ctx, scmd, *, args):
 
     elif(scmd == 'list'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
-            quotes = json.loads(quotesR.read())
-            embed = discord.Embed(title = "Your spread:", description = " ", color=0xFF88FF)
+            quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
+            quotes = json.loads(quotesR.read())['quotes']
+            embed = discord.Embed(title = "Here are your stored quotes:", description = " ", color=0xFF88FF)
             embed.set_footer(text = '\nBot created by ' + AS())
-            for count in quotes.len():
-                pass
+            for index in quotes:
+                embed.add_field(name = "** **",  value = index, inline = False)
+
+            await ctx.send(embed = embed)
 
 @quote.error
 async def quote_error(ctx, error):
