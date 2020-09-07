@@ -127,7 +127,13 @@ async def quote(ctx, scmd, *, args = ""):
         arg = "".join(args)
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
             quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-            quotesList = json.loads(quotesR.read())
+            try:
+                quotesList = json.loads(quotesR.read())
+
+            except:
+                await ctx.send("An error has occurred while storing a quote. Please either contact the developer, or delete your quotes file using ``k!quote delete``.")
+                return 0
+                
             quotesList['quotes'].append(arg)
             print(quotesList)
             quotesR.seek(0)
@@ -152,9 +158,12 @@ async def quote(ctx, scmd, *, args = ""):
 
             await ctx.send(embed = embed)
 
+        else:
+            await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
+
 @quote.error
 async def quote_error(ctx, error):
-    await errorcheck("k!quote [store|list|grab] [arg]", ctx, error)
+    await errorcheck("k!quote [delete|grab|list|store] [arg]", ctx, error)
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
