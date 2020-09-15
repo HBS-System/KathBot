@@ -4,9 +4,15 @@ from discord.ext import commands
 from discord.ext.commands import ArgumentParsingError, BadArgument, TooManyArguments, MissingRequiredArgument, MissingRequiredArgument, BotMissingRole, BotMissingPermissions, CommandInvokeError, CheckFailure, MissingPermissions, MissingRole
 from random import randint, choice
 
+inviteLink = 'https://discord.gg/gd42PPv'
 cwd = os.getcwd().replace("\\", "/")
 client = commands.Bot(command_prefix = 'kt!')
 client.remove_command('help')
+
+def error_token(msgID):
+    random.seed(msgID)
+    errorID = randint(0, 10000000)
+    return errorID
 
 def AS():
     AS = client.get_user(id = 456282270974607361)
@@ -19,7 +25,15 @@ def debug_error(ctx, error):
     now = time.localtime()
     errorTime = time.strftime("%H:%M:%S", now)
     errorDate = date.today()
-    print("{0} at {1} on {2} from {3}: {4} \nMessage ID: {5}".format(error, errorTime, errorDate, ctx.message.author.name, ctx.message.content, ctx.message.id))
+    errorID = error_token(ctx.message.id)
+    while(os.path.isfile("{0}/Data/ErrorLogs/{1}.txt".format(cwd, errorID))):
+        print("An error log with the same ID has already been created. Generting new ID...")
+        errorID = error_token(ctx.message.id + 1)
+
+    ErrorLog = open("{0}/Data/ErrorLogs/{1}.txt".format(cwd, errorID), 'w+')
+    ErrorLog.write("Error - {0}\nTime - {1}\nDate - {2}\nMessage - {3}: {4}\nMessage ID - {5}\nError ID - {6}".format(error, errorTime, errorDate, ctx.message.author.name, ctx.message.content, ctx.message.id, errorID))
+    ErrorLog.close()
+    return errorID
 
 @client.event
 async def on_ready():
@@ -35,14 +49,16 @@ async def on_error(event, *args, **kwargs):
     pass
 
 async def errorcheck(usage, ctx, error):
-        
+
+    errorID = debug_error(ctx, error)
+
     if isinstance(error, CheckFailure) or isinstance(error, MissingPermissions) or isinstance(error, MissingRole):
         await ctx.send("You do not have the permissions required to run this command.")
         
     elif isinstance(error, ArgumentParsingError) or isinstance(error, BadArgument) or isinstance(error, TooManyArguments) or isinstance(error, MissingRequiredArgument):
         embed = discord.Embed(title = 'Improper usage.', description = " ", color = 0xFF88FF)
         embed.add_field(name = "Proper usage:", value = usage, inline = False)
-        embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = "https://discord.gg/CGNkcjm", inline = False)
+        embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = inviteLink, inline = False)
         embed.set_footer(text = 'Bot created by %s' % AS())
         await ctx.send(embed = embed)
         
@@ -50,12 +66,10 @@ async def errorcheck(usage, ctx, error):
         await ctx.send("Uh oh! I do not have the permissions to carry out the given command!")
         
     elif isinstance(error, CommandInvokeError):
-        await ctx.send("Uh oh! Please contact my creators, or join the support server to get help with this command! %s\nhttps://discord.gg/CGNkcjm" % AS())
+        await ctx.send("Uh oh! Please contact my creators, or join the support server to get help with this command!\n{0}\nError ID: ``{1}``\n{2}".format(AS(), errorID, inviteLink))
     
     else:
         await ctx.send("An error has occurred.")
-
-    debug_error(ctx, error)
 
 @client.event
 async def on_message(message):
@@ -97,10 +111,11 @@ async def help(ctx):
     embed.add_field(name = "grace", value = "Gay", inline = False)
     embed.add_field(name = "invite", value = "Sends a bot invite link.", inline = False)
     embed.add_field(name = "ping", value = "Responds with the bot's current latency.", inline = False) 
+    embed.add_field(name = "k!quote [delete|grab|list|store] [str]", value = "Quote storage! [WIP]", inline = False) 
     embed.add_field(name = "rate [str]", value = "Rates an argument from a 0 to 10. All people are a 10/10.", inline = False)
     embed.add_field(name = "say [str]", value = "Makes the bot say anything you want it to.", inline = False)
     embed.add_field(name = "tarot [int] [optional str]", value = "Generates a spread of tarot cards, anywhere from between 1 to 7.", inline = False)
-    embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = "https://discord.gg/CGNkcjm", inline = False)
+    embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = inviteLink, inline = False)
     await ctx.send(embed = embed)
 
 @client.command(name = "invite")
@@ -146,6 +161,7 @@ async def quote(ctx, scmd, *, args = ""):
             json.dump(quotesList, quotesW)
 
         await ctx.send("'{0}' has been stored!".format(arg))
+        quotesR.close()
 
     elif(scmd == 'list'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
@@ -157,13 +173,24 @@ async def quote(ctx, scmd, *, args = ""):
                 embed.add_field(name = "** **",  value = index, inline = False)
 
             await ctx.send(embed = embed)
+            quotesR.close()
 
         else:
             await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
 
+    elif(scmd == 'delete'):
+        if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
+            quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
+            quotes = json.loads(quotesR.read())['quotes']
+            for i in len(quotes):
+                print('a')
+
+
+            quotesR.close()
+
 @quote.error
 async def quote_error(ctx, error):
-    await errorcheck("k!quote [delete|grab|list|store] [arg]", ctx, error)
+    await errorcheck("k!quote [delete|grab|list|store] [str]", ctx, error)
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
