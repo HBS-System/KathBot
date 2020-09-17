@@ -109,7 +109,7 @@ async def help(ctx):
     embed.add_field(name = "grace", value = "Gay", inline = False)
     embed.add_field(name = "invite", value = "Sends a bot invite link.", inline = False)
     embed.add_field(name = "ping", value = "Responds with the bot's current latency.", inline = False) 
-    embed.add_field(name = "quote [delete|grab|list|store] [str]", value = "Quote storage! [WIP]", inline = False) 
+    #embed.add_field(name = "quote [delete|grab|list|store] [str]", value = "Quote storage! [WIP]", inline = False) #In Development.
     embed.add_field(name = "rate [str]", value = "Rates an argument from a 0 to 10. All people are a 10/10.", inline = False)
     embed.add_field(name = "say [str]", value = "Makes the bot say anything you want it to.", inline = False)
     embed.add_field(name = "tarot [int] [optional str]", value = "Generates a spread of tarot cards, anywhere from between 1 to 7.", inline = False)
