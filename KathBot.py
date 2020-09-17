@@ -9,6 +9,10 @@ cwd = os.getcwd().replace("\\", "/")
 client = commands.Bot(command_prefix = 'kt!')
 client.remove_command('help')
 
+def error_token(msgID):
+    random.seed(msgID)
+    errorID = randint(0, 10000000)
+    return errorID
 
 def AS():
     AS = client.get_user(id = 456282270974607361)
@@ -21,11 +25,10 @@ def debug_error(ctx, error):
     now = time.localtime()
     errorTime = time.strftime("%H:%M:%S", now)
     errorDate = date.today()
-    random.seed(ctx.message.id)
-    errorID = randint(0, 10000000)
+    errorID = error_token(ctx.message.id)
     while(os.path.isfile("{0}/Data/ErrorLogs/{1}.txt".format(cwd, errorID))):
         print("An error log with the same ID has already been created. Generting new ID...")
-        errorID += 1
+        errorID = error_token(ctx.message.id + 1)
 
     ErrorLog = open("{0}/Data/ErrorLogs/{1}.txt".format(cwd, errorID), 'w+')
     ErrorLog.write("Error - {0}\nTime - {1}\nDate - {2}\nMessage - {3}: {4}\nMessage ID - {5}\nError ID - {6}".format(error, errorTime, errorDate, ctx.message.author.name, ctx.message.content, ctx.message.id, errorID))
@@ -74,7 +77,6 @@ async def on_message(message):
         await client.process_commands(message)
 
 
-
 #Commands v v v
 
 @client.command(name = '8ball')
@@ -109,7 +111,7 @@ async def help(ctx):
     embed.add_field(name = "grace", value = "Gay", inline = False)
     embed.add_field(name = "invite", value = "Sends a bot invite link.", inline = False)
     embed.add_field(name = "ping", value = "Responds with the bot's current latency.", inline = False) 
-    embed.add_field(name = "quote [delete|grab|list|store] [str]", value = "Quote storage! [WIP]", inline = False) 
+    embed.add_field(name = "k!quote [delete|grab|list|store] [str]", value = "Quote storage! [WIP]", inline = False) 
     embed.add_field(name = "rate [str]", value = "Rates an argument from a 0 to 10. All people are a 10/10.", inline = False)
     embed.add_field(name = "say [str]", value = "Makes the bot say anything you want it to.", inline = False)
     embed.add_field(name = "tarot [int] [optional str]", value = "Generates a spread of tarot cards, anywhere from between 1 to 7.", inline = False)
@@ -134,22 +136,21 @@ async def ping(ctx):
         
     await ctx.send("Pong!" + " ``{}ms``".format(round(client.latency * 1000, 1)))
 
-
-#In development. Publishing to main for easier error checking
-"""
 @client.command(name = 'quote')
 async def quote(ctx, scmd, *, args = ""):
-    if(scmd == 'store' or scmd == 's'):
+    if(scmd == 'store'):
         arg = "".join(args)
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
             quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
             try:
                 quotesList = json.loads(quotesR.read())
-                quotesList['quotes'].append(arg)
 
             except:
-                quotesList = {'quotes': [arg]}
-            
+                await ctx.send("An error has occurred while storing a quote. Please either contact the developer, or delete your quotes file using ``k!quote delete``.")
+                return 0
+                
+            quotesList['quotes'].append(arg)
+            print(quotesList)
             quotesR.seek(0)
             quotesR.truncate(0)
             json.dump(quotesList, quotesR)
@@ -160,8 +161,9 @@ async def quote(ctx, scmd, *, args = ""):
             json.dump(quotesList, quotesW)
 
         await ctx.send("'{0}' has been stored!".format(arg))
+        quotesR.close()
 
-    elif(scmd == 'list' or scmd == 'l'):
+    elif(scmd == 'list'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
             quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
             quotes = json.loads(quotesR.read())['quotes']
@@ -171,54 +173,24 @@ async def quote(ctx, scmd, *, args = ""):
                 embed.add_field(name = "** **",  value = index, inline = False)
 
             await ctx.send(embed = embed)
+            quotesR.close()
 
         else:
             await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
 
-    elif(scmd == 'delete' or scmd == 'd'):
+    elif(scmd == 'delete'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
             quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
             quotes = json.loads(quotesR.read())['quotes']
-            embed = discord.Embed(title = "Which quote would you like to delete?", description = "This command will time out in 30 seconds.", color=0xFF88FF)
-            count = 0
-            for i in quotes:
-                count += 1
-                embed.add_field(name = str(count), value = i, inline = False)
-            
-            await ctx.send(embed = embed)
+            for i in len(quotes):
+                print('a')
 
-            def check(m):
-                return m.channel == ctx.channel
 
-            try:
-                while True:
-                    msg = await client.wait_for('message', check=check, timeout = 30.0)
-                    if(msg.author != ctx.author):
-                        pass
-
-                    else:
-                        try:
-                            intMsg = int(msg.content)
-                            try:
-                                await ctx.send('{0} has been deleted.}'.format(msg))
-                                break
-                    
-                            except:
-                                await ctx.send("{0} does not exist. Please specify the number above the quote you want deleted..".format(msg.content, count))
-                                break
-
-                        except:
-                            pass
-
-            except:
-                await ctx.send("Command has timed out, or an invalid response has been given.")
+            quotesR.close()
 
 @quote.error
 async def quote_error(ctx, error):
-    await errorcheck("k!quote [store|list|delete] [str]", ctx, error)
-"""
-#In development. Publishing to main for easier error checking
-
+    await errorcheck("k!quote [delete|grab|list|store] [str]", ctx, error)
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
