@@ -90,7 +90,7 @@ async def eightball(ctx, *args):
 
 @client.command(name = 'cat')
 async def cat(ctx):
-    path = "%s\\Cats" % (cwd)
+    path = "%s/Cats" % (cwd)
     randomCat = random.choice(os.listdir(path))
     await ctx.send("Here's your cat!", file = discord.File(path + '/' + randomCat))
 
@@ -135,8 +135,8 @@ async def ping(ctx):
     await ctx.send("Pong!" + " ``{}ms``".format(round(client.latency * 1000, 1)))
 
 
-#In development. Publishing to main for easier error checking
-"""
+#In development.
+
 @client.command(name = 'quote')
 async def quote(ctx, scmd, *, args = ""):
     if(scmd == 'store' or scmd == 's'):
@@ -216,8 +216,8 @@ async def quote(ctx, scmd, *, args = ""):
 @quote.error
 async def quote_error(ctx, error):
     await errorcheck("k!quote [store|list|delete] [str]", ctx, error)
-"""
-#In development. Publishing to main for easier error checking
+
+#In development.
 
 
 @client.command(name = 'rate')
