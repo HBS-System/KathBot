@@ -90,7 +90,7 @@ async def eightball(ctx, *args):
 
 @client.command(name = 'cat')
 async def cat(ctx):
-    path = "%s\\Cats" % (cwd)
+    path = "%s/Cats" % (cwd)
     randomCat = random.choice(os.listdir(path))
     await ctx.send("Here's your cat!", file = discord.File(path + '/' + randomCat))
 
