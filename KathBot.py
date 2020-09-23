@@ -1,5 +1,6 @@
 import discord, asyncio, typing, os, random, json, time
 from datetime import date
+from discord import channel
 from discord.ext import commands
 from discord.ext.commands import ArgumentParsingError, BadArgument, TooManyArguments, MissingRequiredArgument, MissingRequiredArgument, BotMissingRole, BotMissingPermissions, CommandInvokeError, CheckFailure, MissingPermissions, MissingRole
 from random import randint, choice
@@ -109,7 +110,7 @@ async def help(ctx):
     embed.add_field(name = "grace", value = "Gay", inline = False)
     embed.add_field(name = "invite", value = "Sends a bot invite link.", inline = False)
     embed.add_field(name = "ping", value = "Responds with the bot's current latency.", inline = False) 
-    embed.add_field(name = "quote [delete|grab|list|store] [str]", value = "Quote storage! [WIP]", inline = False) 
+    embed.add_field(name = "quote [delete|list|store] [str]", value = "Quote storage!", inline = False) 
     embed.add_field(name = "rate [str]", value = "Rates an argument from a 0 to 10. All people are a 10/10.", inline = False)
     embed.add_field(name = "say [str]", value = "Makes the bot say anything you want it to.", inline = False)
     embed.add_field(name = "tarot [int] [optional str]", value = "Generates a spread of tarot cards, anywhere from between 1 to 7.", inline = False)
@@ -133,9 +134,6 @@ async def ping(ctx):
         await asyncio.sleep(.4)
         
     await ctx.send("Pong!" + " ``{}ms``".format(round(client.latency * 1000, 1)))
-
-
-#In development.
 
 @client.command(name = 'quote')
 async def quote(ctx, scmd, *, args = ""):
@@ -163,14 +161,18 @@ async def quote(ctx, scmd, *, args = ""):
 
     elif(scmd == 'list' or scmd == 'l'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
-            quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-            quotes = json.loads(quotesR.read())['quotes']
-            embed = discord.Embed(title = "Here are your stored quotes:", description = " ", color=0xFF88FF)
-            embed.set_footer(text = '\nBot created by ' + AS())
-            for index in quotes:
-                embed.add_field(name = "** **",  value = index, inline = False)
+            try:
+                quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
+                quotes = json.loads(quotesR.read())['quotes']
+                embed = discord.Embed(title = "Here are your stored quotes:", description = " ", color=0xFF88FF)
+                embed.set_footer(text = '\nBot created by ' + AS())
+                for index in quotes:
+                    embed.add_field(name = "** **",  value = index, inline = False)
 
-            await ctx.send(embed = embed)
+                await ctx.send(embed = embed)
+
+            except:
+                await ctx.send("Uh oh! Please contact my developers to get help with this command.")
 
         else:
             await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
@@ -178,47 +180,45 @@ async def quote(ctx, scmd, *, args = ""):
     elif(scmd == 'delete' or scmd == 'd'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
             quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-            quotes = json.loads(quotesR.read())['quotes']
+            quotesList = json.loads(quotesR.read())['quotes']
             embed = discord.Embed(title = "Which quote would you like to delete?", description = "This command will time out in 30 seconds.", color=0xFF88FF)
             count = 0
-            for i in quotes:
+            for i in quotesList:
                 count += 1
                 embed.add_field(name = str(count), value = i, inline = False)
             
             await ctx.send(embed = embed)
 
             def check(m):
-                return m.channel == ctx.channel
+                return m.channel == ctx.channel, m.author == ctx.author, m.content == ctx.message.content
 
             try:
                 while True:
                     msg = await client.wait_for('message', check=check, timeout = 30.0)
                     if(msg.author != ctx.author):
-                        pass
+                        continue
 
                     else:
                         try:
                             intMsg = int(msg.content)
                             try:
-                                await ctx.send('{0} has been deleted.}'.format(msg))
+                                await ctx.send('"{0}" has been deleted.'.format(quotesList[intMsg - 1]))
+                                quotesList.remove(quotesList[intMsg - 1])
+                                quotes = {"quotes": quotesList}
+                                quotesR.seek(0)
+                                quotesR.truncate(0)
+                                json.dump(quotes, quotesR)
                                 break
                     
                             except:
-                                await ctx.send("{0} does not exist. Please specify the number above the quote you want deleted..".format(msg.content, count))
+                                await ctx.send("{0} does not exist. Please specify the number above the quote you want deleted.".format(msg.content, count))
                                 break
 
                         except:
-                            pass
+                            await ctx.send("{0} does not exist. Please specify the number above the quote you want deleted.".format(msg.content, count))
 
             except:
                 await ctx.send("Command has timed out, or an invalid response has been given.")
-
-@quote.error
-async def quote_error(ctx, error):
-    await errorcheck("k!quote [store|list|delete] [str]", ctx, error)
-
-#In development.
-
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
@@ -226,17 +226,8 @@ async def rate(ctx, *args):
     lowerArg = arg.lower()
     async with ctx.channel.typing():
         await asyncio.sleep(1)
-        
-    if(lowerArg == 'drukon'):
-        await ctx.send("Hm... I rate %s a 11/10, for being an amazing friend! <3" % arg)
              
-    elif(lowerArg == 'fir'):
-        await ctx.send("Hm... I rate %s a 11/10, for being such a precious little bean! <3" % arg)
-        
-    elif(lowerArg == 'grace'):
-        await ctx.send("Grace is the bestest she gets a 11/10 for being such an awesome little sister! <3")
-        
-    elif(lowerArg == 'pixie' or lowerArg == "sillipha"):
+    if(lowerArg == 'pixie' or lowerArg == "sillipha" or lowerArg == "grace" or lowerArg == "nfs" or lowerArg == "grey" or lowerArg == "katherine" or lowerArg == "lucas"):
         await ctx.send("Hm.. I rate %s a 11/10! <3" % arg)
         
     else:
@@ -323,6 +314,10 @@ async def announcement(ctx, *, arg):
 @eightball.error
 async def eightball_error(ctx, error):
     await errorcheck("k!8ball Argument(s)", ctx, error)
+
+@quote.error
+async def quote_error(ctx, error):
+    await errorcheck("k!quote [store|list|delete] [str]", ctx, error)
 
 @rate.error
 async def rate_error(ctx, error):
