@@ -139,32 +139,25 @@ async def ping(ctx):
 async def quote(ctx, scmd, *, args = ""):
     if(scmd == 'store' or scmd == 's'):
         arg = "".join(args)
-        if(len(arg) < 250):
-            if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
-                quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-                try:
-                    quotesList = json.loads(quotesR.read())
-                    quotesList['quotes'].append(arg)
+        if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
+            quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
+            try:
+                quotesList = json.loads(quotesR.read())
+                quotesList['quotes'].append(arg)
 
-                except:
-                    quotesList = {'quotes': [arg]}
-                if(len(quotesList['quotes']) > 7):
-                    await ctx.send("Can not store quote. (Quote storage limit exceeded)")
-                    return 0
-
-                quotesR.seek(0)
-                quotesR.truncate(0)
-                json.dump(quotesList, quotesR)
-
-            else:
-                quotesW = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'w+')
+            except:
                 quotesList = {'quotes': [arg]}
-                json.dump(quotesList, quotesW)
-
-            await ctx.send("'{0}' has been stored!".format(arg))
+            
+            quotesR.seek(0)
+            quotesR.truncate(0)
+            json.dump(quotesList, quotesR)
 
         else:
-            await ctx.send("Can not store quote. (Quote exceeds 250 character limit)")
+            quotesW = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'w+')
+            quotesList = {'quotes': [arg]}
+            json.dump(quotesList, quotesW)
+
+        await ctx.send("'{0}' has been stored!".format(arg))
 
     elif(scmd == 'list' or scmd == 'l'):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
