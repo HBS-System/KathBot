@@ -95,7 +95,7 @@ async def cat(ctx):
     randomCat = random.choice(os.listdir(path))
     await ctx.send("Here's your cat!", file = discord.File(path + '/' + randomCat))
 
-@client.command(name = "grace")
+@client.command(name = 'grace')
 async def grace(ctx):
     await ctx.send("GRACE.\nIS.\nTHE.\nGAYEST.\nGAY.\nEVER.")
 
@@ -117,7 +117,7 @@ async def help(ctx):
     embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = inviteLink, inline = False)
     await ctx.send(embed = embed)
 
-@client.command(name = "invite")
+@client.command(name = 'invite')
 async def invite(ctx):
     async with ctx.channel.typing():
         await asyncio.sleep(.3)
@@ -135,10 +135,15 @@ async def ping(ctx):
         
     await ctx.send("Pong!" + " ``{}ms``".format(round(client.latency * 1000, 1)))
 
+@client.command(name = 'poggers')
+async def poggers(ctx):
+    await ctx.send('pogChampers')
+    
+
 @client.command(name = 'quote')
-async def quote(ctx, scmd, *, args = ""):
+async def quote(ctx, scmd, *, args = ''):
     if(scmd == 'store' or scmd == 's'):
-        arg = "".join(args)
+        arg = ''.join(args)
         if(len(arg) < 250):
             if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
                 quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
