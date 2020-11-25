@@ -7,7 +7,7 @@ from random import randint, choice
 
 inviteLink = 'https://discord.gg/gd42PPv'
 cwd = os.getcwd().replace("\\", "/")
-client = commands.Bot(command_prefix = 'kt!')
+client = commands.Bot(command_prefix = 'k!')
 client.remove_command('help')
 
 
@@ -138,7 +138,6 @@ async def ping(ctx):
 @client.command(name = 'poggers')
 async def poggers(ctx):
     await ctx.send('pogChampers')
-    
 
 @client.command(name = 'quote')
 async def quote(ctx, scmd, *, args = ''):
