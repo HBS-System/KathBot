@@ -1,13 +1,14 @@
 import discord, asyncio, typing, os, random, json, time
 from datetime import date
 from discord import channel
+from discord.errors import HTTPException
 from discord.ext import commands
-from discord.ext.commands import ArgumentParsingError, BadArgument, TooManyArguments, MissingRequiredArgument, MissingRequiredArgument, BotMissingRole, BotMissingPermissions, CommandInvokeError, CheckFailure, MissingPermissions, MissingRole
+from discord.ext.commands import *
 from random import randint, choice
 
 inviteLink = 'https://discord.gg/gd42PPv'
 cwd = os.getcwd().replace("\\", "/")
-client = commands.Bot(command_prefix = 'k!')
+client = commands.Bot(command_prefix = 'kt!')
 client.remove_command('help')
 
 
@@ -38,12 +39,8 @@ async def on_ready():
     print("Logged on!")
     await client.change_presence(status = discord.Status.online, activity = discord.Game(name = "k!help | inside %s servers!" % len(client.guilds)))
     
-@client.event
+@client.event 
 async def on_command_error(ctx, error):
-    pass
-    
-@client.event
-async def on_error(event, *args, **kwargs):
     pass
 
 async def errorcheck(usage, ctx, error):
@@ -53,7 +50,7 @@ async def errorcheck(usage, ctx, error):
     if isinstance(error, CheckFailure) or isinstance(error, MissingPermissions) or isinstance(error, MissingRole):
         await ctx.send("You do not have the permissions required to run this command.")
         
-    elif isinstance(error, ArgumentParsingError) or isinstance(error, BadArgument) or isinstance(error, TooManyArguments) or isinstance(error, MissingRequiredArgument):
+    elif isinstance(error, ArgumentParsingError) or isinstance(error, UserInputError) or isinstance(error, BadArgument) or isinstance(error, TooManyArguments) or isinstance(error, MissingRequiredArgument) or isinstance(error, HTTPException):
         embed = discord.Embed(title = 'Improper usage.', description = " ", color = 0xFF88FF)
         embed.add_field(name = "Proper usage:", value = usage, inline = False)
         embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = inviteLink, inline = False)
@@ -67,7 +64,7 @@ async def errorcheck(usage, ctx, error):
         await ctx.send("Uh oh! Please contact my creators, or join the support server to get help with this command!\n{0}\nError ID: ``{1}``\n{2}".format(AS(), errorID, inviteLink))
     
     else:
-        await ctx.send("An error has occurred.")
+        await ctx.send("An overseen error has occurred. Please contact my developers to get this resolved! \nError ID: ``{0}`` \nServer invite: ``{1}`` \nOwner's User: ``{2}``".format(errorID, inviteLink, AS()))
 
 @client.event
 async def on_message(message):
@@ -143,7 +140,7 @@ async def poggers(ctx):
 async def quote(ctx, scmd, *, args = ''):
     if(scmd == 'store' or scmd == 's'):
         arg = ''.join(args)
-        if(len(arg) < 250):
+        if(len(arg) < 100):
             if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id))):
                 quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
                 try:
@@ -152,7 +149,7 @@ async def quote(ctx, scmd, *, args = ''):
 
                 except:
                     quotesList = {'quotes': [arg]}
-                if(len(quotesList['quotes']) > 7):
+                if(len(quotesList['quotes']) > 15):
                     await ctx.send("Can not store quote. (Quote storage limit exceeded)")
                     return 0
 
@@ -319,7 +316,6 @@ async def announcement(ctx, *, arg):
     else:
         await ctx.send("You cannot command me, mortal!")
 
-
 #Error checking v v v
 
 @eightball.error
@@ -336,13 +332,17 @@ async def rate_error(ctx, error):
 
 @say.error
 async def say_error(ctx, error):
-    await errorcheck("k!say Argument(s)", ctx, error)
+    embed = discord.Embed(title = 'Improper usage.', description = " ", color = 0xFF88FF)
+    embed.add_field(name = "Proper usage:", value = '``k!say Argument(s)``', inline = False)
+    embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?\nJoin the support server!", value = inviteLink, inline = False)
+    embed.set_footer(text = 'Bot created by %s' % AS())
+    await ctx.send(embed = embed)
 
 @tarot.error
 async def tarot_error(ctx, error):
     await errorcheck("k!tarot [int] [optional str]", ctx, error)
 
-
+#Running the bot v v v
 
 with open("%s/token.txt" % cwd) as token:
     client.run(token.read())
