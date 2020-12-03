@@ -6,8 +6,6 @@ from discord.ext import commands
 from discord.ext.commands import *
 from random import randint, choice
 
-from discord.gateway import DiscordClientWebSocketResponse
-
 inviteLink = 'https://discord.gg/gd42PPv'
 cwd = os.getcwd( ).replace('\\', '/')
 client = commands.Bot(command_prefix = 'kt!')
