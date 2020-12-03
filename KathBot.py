@@ -122,7 +122,7 @@ async def invite(ctx):
     embed = discord.Embed(title="KathBot Invite", description="You want to invite me to your server?!", color=0xFF88FF)
     embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
     embed.set_footer(text = "Bot created by " + AS( ) )
-    embed.add_field(name = "Here's my invite link!", value = "https://discordapp.com/api/oauth2/authorize?client_id=596683881575612429&permissions=67226688&scope=bot")
+    embed.add_field(name = "Here's my invite link!", value = "https://discordapp.com/oauth2/authorize?client_id=596683881575612429&scope=bot&permissions=67390544")
     await ctx.send(embed = embed)
 
 @client.command(name = 'ping')
