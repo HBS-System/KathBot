@@ -121,8 +121,9 @@ async def invite(ctx):
 
     embed = discord.Embed(title="KathBot Invite", description="You want to invite me to your server?!", color=0xFF88FF)
     embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
-    embed.set_footer(text = "Bot created by " + AS( ) )
-    embed.add_field(name = "Here's my invite link!", value = "https://discordapp.com/api/oauth2/authorize?client_id=596683881575612429&permissions=67226688&scope=bot")
+    embed.add_field(name = "Which version would you like to invite?", value = "[Public](https://discordapp.com/oauth2/authorize?client_id=596683881575612429&scope=bot&permissions=335890512) \n[Public Dev](https://discord.com/oauth2/authorize?client_id=610044394854416404&scope=bot&permissions=335890512)")
+    embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?", value = "**Join the [KathBot Support Server!](%s)**" % inviteLink, inline = False)
+    embed.set_footer(text = "Bot created by %s" % AS( ) )
     await ctx.send(embed = embed)
 
 @client.command(name = 'ping')
@@ -136,10 +137,19 @@ async def ping(ctx):
 async def poggers(ctx):
     await ctx.send('pogChampers')
 
-@client.command(name = 'quote')
-async def quote(ctx, scmd, *, args = ' '):
+@client.command(name = 'quote') #this is a fucking MESS OH MY GOD MY EYES
+async def quote(ctx, scmd, *, args = ''):
     if(scmd == 'store' or scmd == 's'):
         arg = ''.join(args)
+        if(arg == '' or arg == '** **' or arg == ' '):
+            errorID = debug_error(ctx, "User input an invalid or empty quote for storage.")
+            embed = discord.Embed(title = 'An error has occurred.', description = ' ', color = 0xFF88FF)
+            embed.add_field(name = "** **\n", value = "You can't store an empty quote.", inline = False)
+            embed.add_field(name = "** ** \nPlease read above message, or contact my developers if you believe this may be a bug.", value = "Error ID: ``{0}`` \n[KathBot Support Server]({1})".format(errorID, inviteLink), inline = False)
+            embed.set_footer(text = 'Bot created by %s' % AS( ) )
+            await ctx.send(embed = embed)
+            return 0
+
         if(len(arg) < 100):
             if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id) ) ):
                 quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
@@ -148,10 +158,13 @@ async def quote(ctx, scmd, *, args = ' '):
                     quotesList['quotes'].append(arg)
 
                 except:
-                    quotesList = {'quotes': [arg] }
-                if(len(quotesList['quotes'] ) > 15):
+                    quotesList = {'quotes': ["persist", arg] }
+                if(len(quotesList['quotes'] ) > 16):
                     await ctx.send("Can not store quote. (Quote storage limit exceeded)")
                     return 0
+
+                elif(len(quotesList['quotes'] ) < 1):
+                    pass
 
                 quotesR.seek(0)
                 quotesR.truncate(0)
@@ -159,7 +172,7 @@ async def quote(ctx, scmd, *, args = ' '):
 
             else:
                 quotesW = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'w+')
-                quotesList = {'quotes': [arg] }
+                quotesList = {'quotes': ["persist", arg] }
                 json.dump(quotesList, quotesW)
 
             await ctx.send("\"{0}\" has been stored!".format(arg) )
@@ -171,16 +184,28 @@ async def quote(ctx, scmd, *, args = ' '):
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id) ) ):
             try:
                 quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-                quotes = json.loads(quotesR.read( ) ) ['quotes']
+                quotes = json.loads(quotesR.read( ) )['quotes']
+                if(len(quotes) <= 1):
+                    await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
+                    return 0
+                    
                 embed = discord.Embed(title = "Here are your stored quotes:", description = ' ', color=0xFF88FF)
-                embed.set_footer(text = "\nBot created by " + AS( ) )
                 for index in quotes:
+                    if(index == quotes[0]):
+                        continue
+
                     embed.add_field(name = '** **',  value = index, inline = False)
 
+                embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?", value = "**Join the [KathBot Support Server!](%s)**" % inviteLink, inline = False)
+                embed.set_footer(text = "Bot created by %s" % AS( ) )
                 await ctx.send(embed = embed)
 
             except:
-                await ctx.send("Uh oh! Please contact my developers to get help with this command.")
+                errorID = debug_error(ctx, "User input an invalid or empty quote for storage.")
+                embed = discord.Embed(title = 'An internal error has occurred.', description = ' ', color = 0xFF88FF)
+                embed.add_field(name = "** ** \nContact developers for assistance.", value = "Error ID: ``{0}`` \n[KathBot Support Server]({1})".format(errorID, inviteLink), inline = False)
+                embed.set_footer(text = 'Bot created by %s' % AS( ) )
+                await ctx.send(embed = embed)
 
         else:
             await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
@@ -188,13 +213,22 @@ async def quote(ctx, scmd, *, args = ' '):
     elif(scmd == 'delete' or scmd == 'd' or scmd == 'del'): #May need to be refined a little bit in the future
         if(os.path.isfile("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id) ) ):
             quotesR = open("{0}/Data/QuotesStorage/{1}.json".format(cwd, ctx.author.id), 'r+')
-            quotesList = json.loads(quotesR.read( ) ) ['quotes']
-            embed = discord.Embed(title = "Which quote would you like to delete?", description = "This command will time out in 30 seconds.", color=0xFF88FF)
+            quotesList = json.loads(quotesR.read( ) )['quotes']
+            if(len(quotesList) <= 1):
+                await ctx.send("You have not stored any quotes. Store some with ``k!quote store [quote]``!")
+                return 0
+
+            embed = discord.Embed(title = "Which quote would you like to delete?", description = "Respond with \"cancel\" to stop. \nCommand will time out in 30 seconds", color=0xFF88FF)
             count = 0
             for i in quotesList:
+                if(i == quotesList[0]):
+                    continue
+
                 count += 1
                 embed.add_field(name = str(count), value = i, inline = False)
             
+            embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?", value = "**Join the [KathBot Support Server!](%s)**" % inviteLink, inline = False)
+            embed.set_footer(text = "Bot created by %s" % AS( ) )
             await ctx.send(embed = embed)
 
             def check(m):
@@ -209,24 +243,27 @@ async def quote(ctx, scmd, *, args = ' '):
                     else:
                         try:
                             intMsg = int(msg.content)
+                            if(intMsg == "cancel" or intMsg == "exit"):
+                                await ctx.send("Quote deletion cancelled.")
+                                return 0
                             try:
-                                await ctx.send("\"{0}\" has been deleted.".format(quotesList[intMsg - 1] ) )
-                                quotesList.remove(quotesList[intMsg - 1] )
+                                deletedQuote = quotesList[intMsg]
+                                quotesList.remove(quotesList[intMsg] )
                                 quotes = {'quotes': quotesList}
                                 quotesR.seek(0)
                                 quotesR.truncate(0)
                                 json.dump(quotes, quotesR)
+                                await ctx.send("\"{0}\" has been deleted.".format(deletedQuote) )
                                 break
                     
                             except:
-                                await ctx.send("{0} does not exist. Please specify the number above the quote you want deleted.".format(msg.content, count) )
-                                break
+                                await ctx.send("\"{0}\" is not a valid number. Please specify the number above the quote you want deleted.".format(msg.content) )
 
                         except:
-                            await ctx.send("{0} does not exist. Please specify the number above the quote you want deleted.".format(msg.content, count) )
+                            await ctx.send("\"{0}\" is not a valid number. Please specify the number above the quote you want deleted.".format(msg.content) )
 
             except:
-                await ctx.send("Command has timed out, or an invalid response has been given.")
+                await ctx.send("Command has timed out.")
 
 @client.command(name = 'rate')
 async def rate(ctx, *args):
