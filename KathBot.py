@@ -127,6 +127,17 @@ async def help(ctx):
     embed.set_footer(text = "Bot created by %s" % AS( ) )
     await ctx.send(embed = embed)
 
+@client.command(name = 'info')
+async def info(ctx):
+    embed = discord.Embed(title = 'Information', description = '** **', color = 0xFF88FF)
+    embed.add_field(name = "Source Code", value = "You can find a link to my source code [here](https://github.com/HBS-System/KathBot)! \n** **", inline = False)
+    embed.add_field(name = "Trello", value = "You can visit my trello [here](https://trello.com/b/1VH1OE4n/kathbot-python)! \n** **", inline = False)
+    embed.add_field(name = "Twitter", value = "You can visit the dev twitter [here](https://twitter.com/kathbot_dev)!", inline = False)
+    embed.add_field(name = "About KathBot!", value = "Just a bot AS decided to work on in their spare time. There isn't any specific goal for the bot, but it's going.", inline = False)
+    embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?", value = "**Join the [KathBot Support Server!](%s)**" % inviteLink, inline = False)
+    embed.set_footer(text = "Bot created by %s" % AS( ) )
+    await ctx.send(embed = embed)
+
 @client.command(name = 'invite')
 async def invite(ctx):
     async with ctx.channel.typing( ):
@@ -306,17 +317,6 @@ async def say(ctx, *, args = ''):
         
     except:
         return 0
-
-@client.command(name = 'info')
-async def info(ctx):
-    embed = discord.Embed(title = 'Information', description = '** **', color = 0xFF88FF)
-    embed.add_field(name = "Source Code", value = "You can find a link to my source code [here](https://github.com/HBS-System/KathBot)! \n** **", inline = False)
-    embed.add_field(name = "Trello", value = "You can visit my trello [here](https://trello.com/b/1VH1OE4n/kathbot-python)! \n** **", inline = False)
-    embed.add_field(name = "Twitter", value = "You can visit the dev twitter (here)[https://twitter.com/kathbot_dev]!", inline = False)
-    embed.add_field(name = "About KathBot!", value = "Just a bot AS decided to work on in their spare time. There isn't any specific goal for the bot, but it's going.", inline = False)
-    embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?", value = "**Join the [KathBot Support Server!](%s)**" % inviteLink, inline = False)
-    embed.set_footer(text = "Bot created by %s" % AS( ) )
-    await ctx.send(embed = embed)
 
 @client.command(name = 'tarot')
 async def tarot(ctx, arg = 1, *args):
