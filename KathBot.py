@@ -8,7 +8,7 @@ from random import randint, choice
 
 inviteLink = 'https://discord.gg/gd42PPv'
 cwd = os.getcwd( ).replace('\\', '/')
-client = commands.Bot(command_prefix = 'kt!')
+client = commands.Bot(command_prefix = 'k!')
 client.remove_command('help')
 
 #If you have tips on formatting or code, please notify me.
