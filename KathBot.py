@@ -157,10 +157,6 @@ async def ping(ctx):
         
     await ctx.send('Pong!' + ' ``{}ms``'.format(round(client.latency * 1000, 1) ) )
 
-@client.command(name = 'poggers')
-async def poggers(ctx):
-    await ctx.send('pogChampers')
-
 @client.command(name = 'quote') #this is a fucking mess oH GOD MY EYES
 async def quote(ctx, scmd, *, args = ''):
     if(scmd == 'store' or scmd == 's'):
@@ -301,7 +297,7 @@ async def rate(ctx, *args):
         
     else:
         random.seed(lowerArg)
-        await ctx.send("Hm... I rate {0} a... {1}/10!".format(arg, randint(0,10) ) )
+        await ctx.send("Hm... I rate {0} a... {1}/10! (ALL people who are rated are automatically an 11/10)".format(arg, randint(0,10) ) )
 
 @client.command(name = 'say')
 async def say(ctx, *, args = ''):
