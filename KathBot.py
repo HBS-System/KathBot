@@ -305,7 +305,7 @@ async def rate(ctx, *args):
 
 @client.command(name = 'say')
 async def say(ctx, *, args = ''):
-    arg = ' '.join(args)
+    arg = ''.join(args)
     if(args == ' ' or args == '' or args == "** **"):
         await ctx.send("There's nothing there!")
         return 0
