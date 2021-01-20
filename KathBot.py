@@ -16,7 +16,12 @@ client.remove_command('help')
 #If you have tips on formatting or code, please notify me.
 
 def AS( ):
-    AS = client.get_user(id = 456282270974607361)
+    try:
+        AS = client.get_user(id = 456282270974607361)
+    
+    except:
+        AS = {'name': "ANARCH1ST_S0ULS"}
+    
     return AS.name + '#' + AS.discriminator
 
 with open('%s/tarot.json' % cwd) as cardList:
@@ -413,7 +418,8 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
     if(cmd == 'help'):
         embed = discord.Embed(title = "KathBot Settings", description="This is a list of all available settings.", color=0xFF88FF)
         embed.set_thumbnail(url = 'https://puu.sh/Fvnef.png')
-        embed.add_field(name = "ignore [#channel] [True/False]", value = "This command will blacklist specific channels.")
+        embed.add_field(name = "ignore [#channel] [True/False]", value = "This command will disable commands in the given channel(s).", inline = False)
+        embed.add_field(name = 'list', value = "Lists the current settings.", inline = False)
         embed.add_field(name = "messages [#channel] [True/False]", value = "This setting changes where announcements go. By default it is set to (channel)", inline = False)
         embed.add_field(name = "mod [role] [add/del]", value = "This setting changes what roles can access moderation commands. This is set to any role with the Administrator permission ticked by default.", inline = False)
         embed.add_field(name = "regen", value = "**This command will RESET all of the current settings to default.**", inline = False)
@@ -424,10 +430,13 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
     elif(cmd == 'ignore'):
         pass
 
+    elif(cmd == 'list'):
+        pass
+
     elif(cmd == 'messages'):
         pass
 
-    elif(cmd == 'mod'):
+    elif(cmd == 'mod'): # WIP
         if(os.path.isfile("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id) ) ):
             settingsR = open("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id), 'r+')
             print(json.load(settingsR) )
@@ -485,7 +494,7 @@ async def owner_status(ctx, *, arg):
         await ctx.send("You can not command me, mortal!")
         
 @client.command(name = 'announce')
-async def owner_announce(ctx, *, arg):
+async def owner_announce(ctx, *, arg): # WIP
     if(ctx.author.id == 456282270974607361):
         for guild in client.guilds:
             embed = discord.Embed(title = 'Announcement', description = "Announcement from KathBot's Developer(s)", color = 0xFF88FF)
