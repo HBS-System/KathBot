@@ -346,7 +346,7 @@ async def tarot(ctx, arg = 1, *args):
 
 
 
-#Moderation commands are currently in development.
+#Moderation commands are currently in development. woop
 
 
 
