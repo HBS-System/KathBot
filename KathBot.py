@@ -292,7 +292,31 @@ async def rate(ctx, *args):
     async with ctx.channel.typing( ):
         await asyncio.sleep(1)
              
-    if(lowerArg == 'pixie' or lowerArg == 'sillipha' or lowerArg == 'grace' or lowerArg == 'nfs' or lowerArg == 'draco' or lowerArg == 'lucas'):
+    if(lowerArg == 'pixie' or 
+    lowerArg == 'sillipha' or 
+    lowerArg == 'grace' or 
+    lowerArg == 'nfs' or 
+    lowerArg == 'draco' or 
+    lowerArg == 'lucas' or
+    lowerArg == 'yuki' or 
+    lowerArg == 'dragon' or 
+    lowerArg == 'fir' or 
+    lowerArg == 'drukon' or 
+    lowerArg == 'abyssal void' or 
+    lowerArg == 'abyssalvoid' or 
+    lowerArg == 'abyssal_void' or 
+    lowerArg == 'alexis' or 
+    lowerArg == 'me' or 
+    lowerArg == 'you' or 
+    lowerArg == 'as' or 
+    lowerArg == 'anarch1st_s0uls' or 
+    lowerArg == 'anarch1st s0uls' or 
+    lowerArg == 'anarchist souls' or 
+    lowerArg == 'anarch1sts0uls' or 
+    lowerArg == 'anarchistsouls' or 
+    lowerArg == 'anarchist_souls' or 
+    lowerArg == 'someone' or 
+    lowerArg == 'myria'):
         await ctx.send("Hm.. I rate %s a 11/10! <3" % arg)
         
     else:
