@@ -107,6 +107,7 @@ async def on_guild_join(guild):
         await guild.fetch_channel()
         settingsW = open("{0}/Data/GuildSettings/{1}.json".format(cwd, guild.id), 'w+')
         settings = {
+        'Ignore': ['N/A'],
         'ModRole': True,
         'Messages': botChannel
         }
@@ -118,7 +119,7 @@ async def on_guild_join(guild):
         settingsW = open("{0}/Data/GuildSettings/{1}.json".format(cwd, guild.id), 'w+')
         settings = {
             'Ignore': ['N/A'],
-            'ModRoles': [True],
+            'ModRoles': True,
             'Messages': 'N/A'
         }
 
@@ -324,7 +325,31 @@ async def rate(ctx, *args):
     async with ctx.channel.typing( ):
         await asyncio.sleep(1)
              
-    if(lowerArg == 'pixie' or lowerArg == 'sillipha' or lowerArg == 'grace' or lowerArg == 'nfs' or lowerArg == 'grey' or lowerArg == 'katherine' or lowerArg == 'lucas'):
+    if(lowerArg == 'pixie' or 
+    lowerArg == 'sillipha' or 
+    lowerArg == 'grace' or 
+    lowerArg == 'nfs' or 
+    lowerArg == 'draco' or 
+    lowerArg == 'lucas' or
+    lowerArg == 'yuki' or 
+    lowerArg == 'dragon' or 
+    lowerArg == 'fir' or 
+    lowerArg == 'drukon' or 
+    lowerArg == 'abyssal void' or 
+    lowerArg == 'abyssalvoid' or 
+    lowerArg == 'abyssal_void' or 
+    lowerArg == 'alexis' or 
+    lowerArg == 'me' or 
+    lowerArg == 'you' or 
+    lowerArg == 'as' or 
+    lowerArg == 'anarch1st_s0uls' or 
+    lowerArg == 'anarch1st s0uls' or 
+    lowerArg == 'anarchist souls' or 
+    lowerArg == 'anarch1sts0uls' or 
+    lowerArg == 'anarchistsouls' or 
+    lowerArg == 'anarchist_souls' or 
+    lowerArg == 'someone' or 
+    lowerArg == 'myria'):
         await ctx.send("Hm.. I rate %s a 11/10! <3" % arg)
         
     else:
@@ -333,7 +358,7 @@ async def rate(ctx, *args):
 
 @client.command(name = 'say')
 async def say(ctx, *, args = ''):
-    arg = ' '.join(args)
+    arg = ''.join(args)
     if(args == ' ' or args == '' or args == "** **"):
         await ctx.send("There's nothing there!")
         return 0
@@ -396,13 +421,13 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
         curSettings = json.load(settingsR)
         isMod = False
 
-        if(curSettings['ModRole'] == True):
+        if(curSettings['ModRoles'] == True):
             if(ctx.author.guild_permissions.administrator):
                 isMod = True
 
         else:
             for role in ctx.author.roles:
-                for modRole in curSettings['ModRole']:
+                for modRole in curSettings['ModRoles']:
                     if(isMod == True):
                         break
 
@@ -413,7 +438,8 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
                         continue
 
         if(isMod == False):
-            return 0
+            print("aaa1")
+            return PermissionError
 
     if(cmd == 'help'):
         embed = discord.Embed(title = "KathBot Settings", description="This is a list of all available settings.", color=0xFF88FF)
@@ -427,11 +453,25 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
         embed.set_footer(text = "Bot created by %s" % AS( ) )
         await ctx.send(embed = embed)
 
-    elif(cmd == 'ignore'):
+    elif(cmd == 'ignore'): #This will set which channels the bot will ignore commands in.
         pass
 
-    elif(cmd == 'list'):
-        pass
+    elif(cmd == 'list'): #This will list all settings that are in place.
+        if(os.path.isfile("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id) ) ):
+            settingsR = open("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id), 'r+')
+            print(json.load(settingsR) )
+            embed = discord.Embed(title = 'Oops!', description = ' ', color = 0xFF88FF)
+            embed.add_field(name = "** ** \nA message.", value = "This command is currently a work in progress.", inline = False)
+            embed.add_field(name = "Need support with the bot, have concerns, or have a bug to report?", value = "**Join the [KathBot Support Server!](%s)**" % inviteLink, inline = False)
+            embed.set_footer(text = "Bot created by %s" % AS( ) )
+            await ctx.send(embed = embed)
+        
+        else:
+            embed = discord.Embed(title = 'An error has occurred.', description = ' ', color = 0xFF88FF)
+            embed.add_field(name = "** ** \nSettings error.", value = "You do not have any settings generated.", inline = False)
+            embed.add_field(name = "** ** \nPlease read above message, or contact my developers if you believe this may be a bug.", value = "Error: Generate a settings file. \n[KathBot Support Server]({1})".format(inviteLink), inline = False)
+            embed.set_footer(text = 'Bot created by %s' % AS( ) )
+            await ctx.send(embed = embed)
 
     elif(cmd == 'messages'):
         pass
@@ -440,6 +480,9 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
         if(os.path.isfile("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id) ) ):
             settingsR = open("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id), 'r+')
             print(json.load(settingsR) )
+        
+        else:
+            print("aaa")
 
     elif(cmd == 'reset'):
         await ctx.send("Say ``RESET`` if you want to reset. Otherwise, say ``CANCEL`` to cancel reset.")
@@ -459,7 +502,7 @@ async def mod_settings(ctx, cmd = 'help', arg = '', bool = ''):
                                 settingsW = open("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id), 'w+')
                                 settings = {
                                     'Ignore': ['N/A'],
-                                    'ModRoles': [True],
+                                    'ModRoles': True,
                                     'Messages': 'N/A'
                                 }
                                 json.dump(settings, settingsW)
