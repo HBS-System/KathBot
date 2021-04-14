@@ -6,17 +6,17 @@ from discord.ext import commands
 from discord.ext.commands import *
 from random import randint, choice
 
-inviteLink = "https://discord.gg/gd42PPv"
+inviteLink = "https://discord.gg/scQw6vRBfE"
 cwd = os.getcwd().replace("\\", "/")
 client = commands.Bot(command_prefix="k!")
 client.remove_command("help")
 
-# If you have tips on formatting or code, please notify me.
+# fuck word
 
 
-def AS():
-    AS = client.get_user(id=456282270974607361)
-    return AS.name + "#" + AS.discriminator
+def Undef_():
+    Undef_ = client.get_user(id=456282270974607361)
+    return Undef_.name + "#" + Undef_.discriminator
 
 
 with open("%s/tarot.json" % cwd) as cardList:
@@ -88,7 +88,7 @@ async def errorcheck(usage, ctx, error):
             ),
             inline=False,
         )
-        embed.set_footer(text="Bot created by %s" % AS())
+        embed.set_footer(text="Bot created by %s" % Undef_())
         await ctx.send(embed=embed)
 
     elif (
@@ -114,7 +114,7 @@ async def errorcheck(usage, ctx, error):
             ),
             inline=False,
         )
-        embed.set_footer(text="Bot created by %s" % AS())
+        embed.set_footer(text="Bot created by %s" % Undef_())
         await ctx.send(embed=embed)
 
     elif (
@@ -137,7 +137,7 @@ async def errorcheck(usage, ctx, error):
             ),
             inline=False,
         )
-        embed.set_footer(text="Bot created by %s" % AS())
+        embed.set_footer(text="Bot created by %s" % Undef_())
         await ctx.send(embed=embed)
 
     elif isinstance(error, CommandInvokeError) or isinstance(error, NotFound):
@@ -151,7 +151,7 @@ async def errorcheck(usage, ctx, error):
             ),
             inline=False,
         )
-        embed.set_footer(text="Bot created by %s" % AS())
+        embed.set_footer(text="Bot created by %s" % Undef_())
         await ctx.send(embed=embed)
 
     else:
@@ -169,7 +169,7 @@ async def errorcheck(usage, ctx, error):
         )
         embed.set_footer(
             text="Bot created by {0} \nBroken by {1}".format(
-                AS(), ctx.author.name + "#" + ctx.author.discriminator
+                Undef_(), ctx.author.name + "#" + ctx.author.discriminator
             )
         )
         await ctx.send(embed=embed)
@@ -285,7 +285,7 @@ async def help(ctx):
         value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
         inline=False,
     )
-    embed.set_footer(text="Bot created by %s" % AS())
+    embed.set_footer(text="Bot created by %s" % Undef_())
     await ctx.send(embed=embed)
 
 
@@ -309,7 +309,7 @@ async def info(ctx):
     )
     embed.add_field(
         name="About KathBot!",
-        value="Just a bot AS decided to work on in their spare time. There isn't any specific goal for the bot, but it's going.",
+        value="Just a bot Undef_ decided to work on in their spare time. There isn't any specific goal for the bot, but it's going.",
         inline=False,
     )
     embed.add_field(
@@ -317,7 +317,7 @@ async def info(ctx):
         value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
         inline=False,
     )
-    embed.set_footer(text="Bot created by %s" % AS())
+    embed.set_footer(text="Bot created by %s" % Undef_())
     await ctx.send(embed=embed)
 
 
@@ -341,7 +341,7 @@ async def invite(ctx):
         value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
         inline=False,
     )
-    embed.set_footer(text="Bot created by %s" % AS())
+    embed.set_footer(text="Bot created by %s" % Undef_())
     await ctx.send(embed=embed)
 
 
@@ -374,7 +374,7 @@ async def quote(ctx, scmd, *, args=""):
                 ),
                 inline=False,
             )
-            embed.set_footer(text="Bot created by %s" % AS())
+            embed.set_footer(text="Bot created by %s" % Undef_())
             await ctx.send(embed=embed)
             return 0
 
@@ -445,7 +445,7 @@ async def quote(ctx, scmd, *, args=""):
                     value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
                     inline=False,
                 )
-                embed.set_footer(text="Bot created by %s" % AS())
+                embed.set_footer(text="Bot created by %s" % Undef_())
                 await ctx.send(embed=embed)
 
             except:
@@ -464,7 +464,7 @@ async def quote(ctx, scmd, *, args=""):
                     ),
                     inline=False,
                 )
-                embed.set_footer(text="Bot created by %s" % AS())
+                embed.set_footer(text="Bot created by %s" % Undef_())
                 await ctx.send(embed=embed)
 
         else:
@@ -504,7 +504,7 @@ async def quote(ctx, scmd, *, args=""):
                 value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
                 inline=False,
             )
-            embed.set_footer(text="Bot created by %s" % AS())
+            embed.set_footer(text="Bot created by %s" % Undef_())
             await ctx.send(embed=embed)
 
             def check(m):
@@ -630,7 +630,7 @@ async def tarot(ctx, arg=1, *args):
             await asyncio.sleep(0.6)
 
         embed = discord.Embed(title="Your spread:", description=" ", color=0xFF88FF)
-        embed.set_footer(text="Bot created by " + AS())
+        embed.set_footer(text="Bot created by " + Undef_())
         for card in range(0, count):
             card += 1
             flip = random.randint(0, 1)
@@ -653,7 +653,7 @@ async def tarot(ctx, arg=1, *args):
             value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
             inline=False,
         )
-        embed.set_footer(text="Bot created by %s" % AS())
+        embed.set_footer(text="Bot created by %s" % Undef_())
         await ctx.send(embed=embed)
 
     else:
@@ -702,7 +702,7 @@ async def owner_announce(ctx, *, arg):
                 value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
                 inline=False,
             )
-            embed.set_footer(text="Bot created by %s" % AS())
+            embed.set_footer(text="Bot created by %s" % Undef_())
             for channel in guild.text_channels:
                 if bot_has_permissions(
                     discord.Permissions.view_channel, discord.Permissions.send_messages
