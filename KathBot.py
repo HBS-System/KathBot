@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.ext.commands import *
 from random import randint, choice
 
-inviteLink = "https://discord.gg/gd42PPv"
+inviteLink = "https://discord.gg/scQw6vRBfE"
 cwd = os.getcwd().replace("\\", "/")
 client = commands.Bot(command_prefix="kt!")
 client.remove_command("help")
@@ -827,7 +827,9 @@ async def mod_settings(ctx, cmd="help", arg="", bool=""):
     ):  # This subcommand is the announcements channel setting. Changing this changes where announcements are made.
         pass
 
-    elif cmd == "mod":  # WIP
+    elif (
+        cmd == "mod"
+    ):  # This subcommand will tell the bot which roles count as a moderator role.
         if os.path.isfile("{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id)):
             settingsR = open(
                 "{0}/Data/GuildSettings/{1}.json".format(cwd, ctx.guild.id), "r+"
