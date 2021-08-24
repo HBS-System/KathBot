@@ -281,6 +281,11 @@ async def help(ctx):
         inline=False,
     )
     embed.add_field(
+        name="votekick [user] [reason]",
+        value="This is a fun joke command which generates an embedded 'votekick' prompt.",
+        inline=False,
+    )
+    embed.add_field(
         name="Need support with the bot, have concerns, or have a bug to report?",
         value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
         inline=False,
@@ -660,6 +665,56 @@ async def tarot(ctx, arg=1, *args):
         await ctx.send("Argument is out of bounds.")
 
 
+@client.command(name="votekick")
+async def jokekick(ctx, arg, *args):
+
+    embed = discord.Embed(
+        title="Votekick %s out of the server?" % arg,
+        description="Time Left: 40\n{0} has initialized a votekick on {1} for {2}".format(
+            ctx.author, arg, " ".join(args)
+        ),
+        color=0xFF88FF,
+    )
+
+    embed.add_field(
+        name="Need support with the bot, have concerns, or have a bug to report?",
+        value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
+        inline=False,
+    )
+
+    embed.set_footer(text="Bot created by %s" % Undef_())
+    emojis = ["👍", "👎"]
+    message = await ctx.send(embed=embed)
+    for emoji in emojis:
+        await message.add_reaction(emoji)
+
+    await asyncio.sleep(1)
+    number = 0
+    while number < 40:
+        embed = discord.Embed(
+            title="Votekick %s out of the server?" % arg,
+            description="Time left: {0}\n{1} has initialized a votekick on {2} for {3}".format(
+                40 - number, ctx.author.name, arg, " ".join(args)
+            ),
+            color=0xFF88FF,
+        )
+
+        embed.add_field(
+            name="Need support with the bot, have concerns, or have a bug to report?",
+            value="**Join the [KathBot Support Server!](%s)**" % inviteLink,
+            inline=False,
+        )
+
+        embed.set_footer(text="Bot created by %s" % Undef_())
+        await message.edit(embed=embed)
+
+        number += 1
+        await asyncio.sleep(1)
+
+        await asyncio.sleep(1)
+    await message.edit(content="haha got u")
+
+
 # Moderation commands are currently in development. woop
 
 
@@ -790,6 +845,11 @@ async def info_error(ctx, error):
 @tarot.error
 async def tarot_error(ctx, error):
     await errorcheck("k!tarot [int] [optional str]", ctx, error)
+
+
+@jokekick.error
+async def jokekick_error(ctx, error):
+    await errorcheck("k!votekick [User] [Reason]", ctx, error)
 
 
 # Running the bot v v v
