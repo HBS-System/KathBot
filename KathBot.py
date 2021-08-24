@@ -667,9 +667,19 @@ async def tarot(ctx, arg=1, *args):
 
 @client.command(name="votekick")
 async def jokekick(ctx, arg, *args):
+    kickee = None
+    try:
+        pog = int(
+            arg.replace("@", "").replace("<", "").replace(">", "").replace("!", "")
+        )
+        print(pog)
+        kickee = client.get_user(id=pog).name
+
+    except:
+        print("piss and shit")
 
     embed = discord.Embed(
-        title="Votekick %s out of the server?" % arg,
+        title="Votekick %s out of the server?" % kickee,
         description="Time Left: 40\n{0} has initialized a votekick on {1} for {2}".format(
             ctx.author, arg, " ".join(args)
         ),
@@ -692,7 +702,7 @@ async def jokekick(ctx, arg, *args):
     number = 0
     while number < 40:
         embed = discord.Embed(
-            title="Votekick %s out of the server?" % arg,
+            title="Votekick %s out of the server?" % kickee,
             description="Time left: {0}\n{1} has initialized a votekick on {2} for {3}".format(
                 40 - number, ctx.author.name, arg, " ".join(args)
             ),
@@ -711,7 +721,7 @@ async def jokekick(ctx, arg, *args):
         number += 1
         await asyncio.sleep(1)
 
-        await asyncio.sleep(1)
+    await asyncio.sleep(1)
     await message.edit(content="haha got u")
 
 
