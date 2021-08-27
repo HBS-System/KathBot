@@ -672,11 +672,10 @@ async def jokekick(ctx, arg, *args):
         pog = int(
             arg.replace("@", "").replace("<", "").replace(">", "").replace("!", "")
         )
-        print(pog)
         kickee = client.get_user(id=pog).name
 
     except:
-        print("piss and shit")
+        return BadArgument
 
     embed = discord.Embed(
         title="Votekick %s out of the server?" % kickee,
